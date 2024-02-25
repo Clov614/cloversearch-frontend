@@ -8,16 +8,17 @@
       @search="onSearch"
     />
   </div>
+  <!--  {{ JSON.stringify(postList) }}-->
   <MyDivider />
   <a-tabs v-model:activeKey="activeKey" @change="onTabChange">
     <a-tab-pane key="post" tab="文章">
-      <PostList />
+      <PostList :post-list="postList" />
     </a-tab-pane>
     <a-tab-pane key="picture" tab="图片">
-      <PictureList />
+      <PictureList :picture-list="pictureList" />
     </a-tab-pane>
     <a-tab-pane key="user" tab="用户">
-      <UserList />
+      <UserList :user-list="userList" />
     </a-tab-pane>
   </a-tabs>
 </template>
@@ -29,6 +30,21 @@ import PictureList from "@/components/PictureList.vue";
 import UserList from "@/components/UserList.vue";
 import MyDivider from "@/components/MyDivider.vue";
 import { useRoute, useRouter } from "vue-router";
+import myAxios from "@/plugins/myAxios";
+import { Post, UserData } from "@/types/Index";
+
+const postList = ref<Post[]>([]);
+const userList = ref<UserData[]>([]);
+// TODO pictureList
+const pictureList = ref<UserData[]>([]);
+
+myAxios.post("/post/list/page/vo", {}).then((res: any) => {
+  postList.value = res.records as Post[];
+});
+
+myAxios.post("/user/list/page/vo", {}).then((res: any) => {
+  userList.value = res.records as UserData[];
+});
 
 const router = useRouter();
 const route = useRoute();
