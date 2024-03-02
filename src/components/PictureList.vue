@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import landscape from "../assets/landscape.png";
-import { Post, UserData } from "@/types";
+import { PicData } from "@/types";
 import { defineProps, withDefaults } from "vue";
 
 interface Props {
-  pictureList: UserData[];
+  pictureList: PicData[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -13,7 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <a-page-header title="用户列表">
+  <a-page-header title="图片列表">
     <a-list
       item-layout="horizontal"
       :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }"
