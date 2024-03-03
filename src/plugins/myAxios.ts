@@ -22,6 +22,15 @@ instance.interceptors.response.use(
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    if (
+      error.code === "ECONNABORTED" &&
+      error.message.indexOf("timeout") !== -1
+    ) {
+      console.error("请求超时，请稍后重试");
+      // 这里可以根据实际情况进行处理，比如重新发起请求等
+    } else {
+      console.error("请求错误", error);
+    }
     return Promise.reject(error);
   }
 );
