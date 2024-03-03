@@ -33,6 +33,7 @@ import { useRoute, useRouter } from "vue-router";
 import myAxios from "@/plugins/myAxios";
 import { PicData, Post, SearchData, UserData } from "@/types/Index";
 import { AxiosResponse } from "axios";
+import { message } from "ant-design-vue";
 
 const postList = ref<Post[]>([]);
 const userList = ref<UserData[]>([]);
@@ -69,7 +70,7 @@ const pictureList = ref<PicData[]>([]);
  * 加载数据(聚合请求，统一发起请求)
  * @param params
  */
-const loadData = (params: any) => {
+const loadAllData = (params: any) => {
   const query = {
     ...params,
   };
@@ -82,6 +83,30 @@ const loadData = (params: any) => {
   });
 };
 
+/**
+ * 加载单数据(聚合请求，统一发起请求)
+ * @param params
+ */
+const loadData = (params: any) => {
+  const { type } = params;
+  console.log("params = ", params);
+  if (!type) {
+    // if null  load all
+    loadAllData(params);
+    return;
+  }
+  myAxios.post("/search/all", params).then((res: any) => {
+    res = res as SearchData;
+    if (type === "post") {
+      postList.value = res.postPage.records as Post[];
+    } else if (type === "user") {
+      userList.value = res.userPage.records as UserData[];
+    } else if (type === "picture") {
+      pictureList.value = res.picturePage.records as PicData[];
+    }
+  });
+};
+
 const router = useRouter();
 const route = useRoute();
 const activeKey = route.params.category; // 动态路由相匹配
@@ -90,16 +115,19 @@ const initSearchParams = {
   searchText: "",
   pageSize: 10,
   current: 1,
+  type: activeKey,
 };
 
 const searchParams = ref(initSearchParams);
-// 首次请求
+
+// 首次加载全部数据
 loadData(searchParams.value);
 
 watchEffect(() => {
   searchParams.value = {
     ...initSearchParams,
     searchText: route.query.searchText,
+    type: route.params.category,
   } as any;
 });
 
@@ -113,9 +141,14 @@ const onSearch = (value: string) => {
 };
 
 const onTabChange = (key: string) => {
+  const query = {
+    ...searchParams.value,
+    type: key, // searchParams 不同步问题
+  };
   router.push({
     path: `/${key}`,
-    query: searchParams.value,
+    query: query,
   });
+  loadData(query);
 };
 </script>
