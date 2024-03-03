@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import landscape from "../assets/landscape.png";
-import { Post, UserData } from "@/types";
+import { UserData } from "@/types";
 import { defineProps, withDefaults } from "vue";
 
 interface Props {

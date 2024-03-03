@@ -35,6 +35,7 @@ export interface SearchData {
   userPage: SearchPage;
   postPage: SearchPage;
   picturePage: SearchPage;
+  dataPage: SearchPage;
 }
 
 // 统一搜索 Page
